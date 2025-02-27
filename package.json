@@ -7,6 +7,15 @@
     "name": "tantivy",
     "triples": {}
   },
+  "author": "Pierre Sauvage <m.sauvage.pierre@gmail.com>",
+  "contributors": [
+    "Pierre Sauvage <pierre@adaltas.com> (https://www.adaltas.com)",
+    "David Worms <david@adaltas.com> (https://www.adaltas.com)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adaltas/node-tantity"
+  }, 
   "license": "MIT",
   "devDependencies": {
     "@napi-rs/cli": "^2.18.4",
@@ -27,5 +36,10 @@
     "universal": "napi universal",
     "version": "napi version"
   },
-  "packageManager": "yarn@4.6.0"
+  "packageManager": "yarn@4.6.0",
+  "optionalDependencies": {
+    "tantivy-win32-x64-msvc": "0.1.0",
+    "tantivy-darwin-x64": "0.1.0",
+    "tantivy-linux-x64-gnu": "0.1.0"
+  }
 }

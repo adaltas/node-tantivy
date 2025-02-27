@@ -1,15 +1,3 @@
-/**
- * @fileoverview Test file
- *
- * @license MIT
- *
- * Licensed under the MIT License (see LICENSE file for details).
- *
- * SPDX-License-Identifier: MIT
- *
- * @author Pierre Sauvage <pierre@adaltas.com>
- */
-
 import test from "ava";
 
 import { openInDir, search, getDocumentByDocId } from "../index.js";

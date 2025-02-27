@@ -1,15 +1,3 @@
-/**
- * @fileoverview Example of usage, for now
- *
- * @license MIT
- *
- * Licensed under the MIT License (see LICENSE file for details).
- *
- * SPDX-License-Identifier: MIT
- *
- * @author Pierre Sauvage <pierre@adaltas.com>
- */
-
 import { openInDir, search, getDocumentByAddress } from "./index.js";
 
 let index = openInDir(
