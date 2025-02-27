@@ -13,10 +13,14 @@ export interface JsDocAddress {
   segmentOrd: number
   docId: number
 }
+export interface SearchOptions {
+  fields?: Array<string>
+  limit?: number
+}
 export interface TopDoc {
   score: number
   docAddress: JsDocAddress
 }
 export declare function openInDir(pathStr: string): ExternalObject<Index>
-export declare function search(index: ExternalObject<Index>, query: string, fieldNames: Array<string>, limit: number): Array<TopDoc>
-export declare function getDocumentByDocId(index: ExternalObject<Index>, docAddress: JsDocAddress): string
+export declare function search(index: ExternalObject<Index>, query: string, searchOptions?: SearchOptions | undefined | null): Array<TopDoc>
+export declare function getDocumentByAddress(index: ExternalObject<Index>, docAddress: JsDocAddress): string

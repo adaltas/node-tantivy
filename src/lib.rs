@@ -39,15 +39,26 @@ pub fn open_in_dir(path_str: String) -> Result<External<Index>> {
 pub fn search(
   index: External<Index>,
   query: String,
-  field_names: Vec<String>,
-  limit: i64,
+  search_options: Option<SearchOptions>,
 ) -> Result<Vec<TopDoc>> {
-  if limit < 0 {
+  let options = search_options.unwrap_or(SearchOptions {
+    fields: None, // Don't compute default_fields here
+    limit: None,
+  });
+
+  let limit = options.limit.unwrap_or(10);
+  //Check limit is positive
+  if limit <= 0 {
     return Err(napi::Error::new(
       Status::InvalidArg,
-      "Limit must be positive",
+      "Limit must be strictly positive",
     ));
   }
+  //get fields or get default (all indexed) of index
+  let field_names = options
+    .fields
+    .unwrap_or_else(|| search::default_fields(&index).unwrap());
+
   let results = search::search(&index, query, field_names, limit as usize);
 
   match results {
@@ -69,13 +80,13 @@ pub fn search(
 }
 
 #[napi]
-pub fn get_document_by_doc_id(
+pub fn get_document_by_address(
   index: External<Index>,
   doc_address: JsDocAddress,
 ) -> napi::Result<String> {
   let reader = index
     .reader()
-    .map_err(|e| napi::Error::from_reason(format!("Failed to create index reader: {}", e)))?;
+    .map_err(|e| napi::Error::new(Status::GenericFailure, e))?;
 
   let searcher = reader.searcher();
   let doc_address: tantivy::DocAddress = doc_address.into();
@@ -88,6 +99,5 @@ pub fn get_document_by_doc_id(
     .map_err(|e| napi::Error::new(Status::GenericFailure, e))?;
 
   // Sérialisation du document en JSON
-  serde_json::to_string(&stored_doc)
-    .map_err(|e| napi::Error::from_reason(format!("Failed to serialize document: {}", e)))
+  serde_json::to_string(&stored_doc).map_err(|e| napi::Error::new(Status::GenericFailure, e))
 }

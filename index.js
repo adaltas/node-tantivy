@@ -310,8 +310,8 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { openInDir, search, getDocumentByDocId } = nativeBinding
+const { openInDir, search, getDocumentByAddress } = nativeBinding
 
 module.exports.openInDir = openInDir
 module.exports.search = search
-module.exports.getDocumentByDocId = getDocumentByDocId
+module.exports.getDocumentByAddress = getDocumentByAddress

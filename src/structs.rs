@@ -37,6 +37,12 @@ impl From<DocAddress> for JsDocAddress {
 //Custom objects
 
 #[napi(object)]
+pub struct SearchOptions {
+  pub fields: Option<Vec<String>>,
+  pub limit: Option<i32>,
+}
+
+#[napi(object)]
 pub struct TopDoc {
   pub score: f64,
   pub doc_address: JsDocAddress,

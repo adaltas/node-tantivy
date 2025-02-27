@@ -32,6 +32,18 @@ pub fn search(
   searcher.search(&parsed_query, &collector)
 }
 
+//default fields are indexed ones
+pub fn default_fields(index: &Index) -> Result<Vec<String>, TantivyError> {
+  let indexed_fields = index.fields_metadata()?;
+
+  let ret = indexed_fields
+    .into_iter()
+    .map(|field| field.field_name)
+    .collect();
+
+  Ok(ret)
+}
+
 // PRIVATE
 
 fn get_reader(index: &Index) -> Result<tantivy::IndexReader, tantivy::TantivyError> {
