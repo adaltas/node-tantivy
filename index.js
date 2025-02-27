@@ -310,6 +310,8 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { sum } = nativeBinding
+const { openInDir, search, getDocumentByDocId } = nativeBinding
 
-module.exports.sum = sum
+module.exports.openInDir = openInDir
+module.exports.search = search
+module.exports.getDocumentByDocId = getDocumentByDocId
