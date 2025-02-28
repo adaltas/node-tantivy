@@ -1,6 +1,6 @@
 import test from "ava";
 
-import { openInDir, search, getDocumentByDocId } from "../index.js";
+import { openInDir, search, getDocumentByAddress } from "../index.js";
 
 const TEST_DIR = "/home/pierrotws/git/adaltas/alliage/knowledge-base/toto/";
 
@@ -37,7 +37,7 @@ test("search function returns results within limit and with valid documents", (t
     );
     t.not(r.docAddress.segmentOrd, undefined, "segmentOrd must be defined");
 
-    const document = getDocumentByDocId(index, r.docAddress);
+    const document = getDocumentByAddress(index, r.docAddress);
     t.truthy(document, "Each document must exist in the index");
   }
 });
