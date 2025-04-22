@@ -13,6 +13,8 @@
 //NAPI-RS
 use napi::bindgen_prelude::*;
 
+use crate::napi_err;
+
 use crate::{oldsearch, JsDocAddress};
 
 use crate::{collector::JsTopDocFruit, JsSearchOptions};
@@ -62,7 +64,7 @@ pub fn search(
       docs.sort_by(|(score_a, _), (score_b, _)| score_b.partial_cmp(score_a).unwrap());
       Ok(docs.into_iter().map(|t| JsTopDocFruit::from(t)).collect())
     }
-    Err(e) => Err(napi::Error::from_reason(e.to_string())),
+    Err(e) => Err(napi_err(e)),
   }
 }
 
@@ -81,10 +83,8 @@ pub fn get_document_by_address(
   let segment_reader = searcher.segment_reader(doc_address.segment_ord);
   let store_reader = segment_reader.get_store_reader(100)?;
 
-  let stored_doc: TantivyDocument = store_reader
-    .get(doc_address.doc_id)
-    .map_err(|e| napi::Error::from_reason(e.to_string()))?;
+  let stored_doc: TantivyDocument = store_reader.get(doc_address.doc_id).map_err(napi_err)?;
 
   // Sérialisation du document en JSON
-  serde_json::to_string(&stored_doc).map_err(|e| napi::Error::from_reason(e.to_string()))
+  serde_json::to_string(&stored_doc).map_err(napi_err)
 }

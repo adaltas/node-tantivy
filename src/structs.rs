@@ -12,11 +12,13 @@
 
 use tantivy::DocAddress;
 
-#[napi(object)]
+#[napi(object, js_name = "DocAddress")]
+#[derive(Clone)]
 pub struct JsDocAddress {
   pub segment_ord: u32,
   pub doc_id: u32,
 }
+
 // Implement conversion to Tantivy's `DocAddress`
 impl From<JsDocAddress> for DocAddress {
   fn from(js_addr: JsDocAddress) -> Self {
@@ -36,14 +38,8 @@ impl From<DocAddress> for JsDocAddress {
 
 //Custom objects
 
-#[napi(object)]
-pub struct SearchOptions {
+#[napi(object, js_name = "SearchOptions")]
+pub struct JsSearchOptions {
   pub fields: Option<Vec<String>>,
   pub limit: Option<i32>,
-}
-
-#[napi(object)]
-pub struct TopDoc {
-  pub score: f64,
-  pub doc_address: JsDocAddress,
 }
