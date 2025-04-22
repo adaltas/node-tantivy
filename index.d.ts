@@ -9,7 +9,14 @@ export declare class ExternalObject<T> {
     [K: symbol]: T
   }
 }
-export interface JsDocAddress {
+export declare function openInDir(pathStr: string): ExternalObject<Index>
+export declare function search(index: ExternalObject<Index>, query: string, searchOptions?: JsSearchOptions | undefined | null): Array<TopDocFruit>
+export declare function getDocumentByAddress(index: ExternalObject<Index>, docAddress: JsDocAddress): string
+export interface FieldResult {
+  fieldId: number
+  path: string
+}
+export interface DocAddress {
   segmentOrd: number
   docId: number
 }
@@ -17,10 +24,57 @@ export interface SearchOptions {
   fields?: Array<string>
   limit?: number
 }
-export interface TopDoc {
+export type JsTopDocFruit = TopDocFruit
+export declare class TopDocFruit {
   score: number
   docAddress: JsDocAddress
 }
-export declare function openInDir(pathStr: string): ExternalObject<Index>
-export declare function search(index: ExternalObject<Index>, query: string, searchOptions?: SearchOptions | undefined | null): Array<TopDoc>
-export declare function getDocumentByAddress(index: ExternalObject<Index>, docAddress: JsDocAddress): string
+export type JsTopDocs = TopDocs
+export declare class TopDocs { }
+export type JsIndex = Index
+export declare class Index {
+  static openInDir(directoryPath: string): JsIndex
+  reader(): JsIndexReader
+  loadMetas(): JsIndexMeta
+}
+export type JsIndexMeta = IndexMeta
+export declare class IndexMeta { }
+export type JsIndexReader = IndexReader
+export declare class IndexReader { }
+export type JsQuery = Query
+export declare class Query { }
+export type JsQueryParser = QueryParser
+export declare class QueryParser {
+  /** Static method to create a new QueryParser */
+  static forIndex(index: Index, fields: Array<ExternalObject<Field>>): JsQueryParser
+  /** Parses a query string */
+  parseQuery(query: string): Query
+}
+export type JsField = Field
+export declare class Field {
+  static fromFieldId(fieldId: number): JsField
+  get fieldId(): number
+}
+export type JsSchema = Schema
+export declare class Schema { }
+export declare class JsSchemaBuilder {
+  constructor()
+  /** Adds a text field with indexing options */
+  addTextField(name: string, options: Array<string>): string
+  /** Adds a u64 (unsigned integer) field */
+  addU64Field(name: string, options: Array<string>): string
+  /** Adds an i64 (signed integer) field */
+  addI64Field(name: string, options: Array<string>): string
+  /** Adds an f64 (floating-point) field */
+  addF64Field(name: string, options: Array<string>): string
+  /** Adds a boolean field */
+  addBoolField(name: string, options: Array<string>): string
+  /** Adds a JSON field */
+  addJsonField(name: string, options: Array<string>): string
+  /** Adds a date field (i64 internally, representing timestamp in microseconds) */
+  addDateField(name: string, options: Array<string>): string
+  /** Builds the final schema */
+  build(): Schema
+}
+export type JsSearcher = Searcher
+export declare class Searcher { }

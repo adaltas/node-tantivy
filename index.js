@@ -310,8 +310,19 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { openInDir, search, getDocumentByAddress } = nativeBinding
+const { TopDocFruit, TopDocs, Index, IndexMeta, IndexReader, openInDir, search, getDocumentByAddress, Query, QueryParser, Field, Schema, JsSchemaBuilder, Searcher } = nativeBinding
 
+module.exports.TopDocFruit = TopDocFruit
+module.exports.TopDocs = TopDocs
+module.exports.Index = Index
+module.exports.IndexMeta = IndexMeta
+module.exports.IndexReader = IndexReader
 module.exports.openInDir = openInDir
 module.exports.search = search
 module.exports.getDocumentByAddress = getDocumentByAddress
+module.exports.Query = Query
+module.exports.QueryParser = QueryParser
+module.exports.Field = Field
+module.exports.Schema = Schema
+module.exports.JsSchemaBuilder = JsSchemaBuilder
+module.exports.Searcher = Searcher
