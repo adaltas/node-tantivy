@@ -49,12 +49,12 @@ impl JsSchema {
 
   #[napi]
   pub fn builder(&self) -> JsSchemaBuilder {
-    JsSchemaBuilder::from(Schema::builder())
+    Schema::builder().into()
   }
 
   #[napi]
   pub fn get_field_name(&self, field: &JsField) -> String {
-    String::from(self._inner.get_field_name(field._inner))
+    self._inner.get_field_name(field._inner).into()
   }
 
   #[napi]

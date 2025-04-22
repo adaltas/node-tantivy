@@ -33,7 +33,7 @@ impl Into<Field> for JsField {
 impl JsField {
   #[napi(factory)]
   pub fn from_field_id(field_id: u32) -> Self {
-    JsField::from(Field::from_field_id(field_id))
+    Field::from_field_id(field_id).into()
   }
 
   #[napi(getter)]

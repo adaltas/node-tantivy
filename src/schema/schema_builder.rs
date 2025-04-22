@@ -143,6 +143,6 @@ impl JsSchemaBuilder {
   #[napi]
   pub fn build(&mut self) -> JsSchema {
     let inner = std::mem::take(&mut self._inner);
-    JsSchema::from(inner.build())
+    inner.build().into()
   }
 }

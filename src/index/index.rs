@@ -55,19 +55,19 @@ impl JsIndex {
   #[napi(factory)]
   pub fn open_in_dir(directory_path: String) -> Result<Self> {
     let index = Index::open_in_dir(directory_path).map_err(napi_err)?;
-    Ok(JsIndex::from(index))
+    Ok(index.into())
   }
 
   #[napi]
   pub fn reader(&self) -> Result<JsIndexReader> {
     let reader = self._inner.reader().map_err(napi_err)?;
-    Ok(JsIndexReader::from(reader))
+    Ok(reader.into())
   }
 
   #[napi]
   pub fn load_metas(&self) -> Result<JsIndexMeta> {
     let meta = self._inner.load_metas().map_err(napi_err)?;
-    Ok(JsIndexMeta::from(meta))
+    Ok(meta.into())
   }
   /*
    #[napi]

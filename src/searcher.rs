@@ -13,7 +13,7 @@
 use napi_derive::napi;
 use tantivy::Searcher;
 
-use crate::index::JsIndex;
+use crate::{index::JsIndex, schema::JsSchema};
 
 #[napi(js_name = "Searcher")]
 pub struct JsSearcher {
@@ -31,6 +31,10 @@ impl From<Searcher> for JsSearcher {
 impl JsSearcher {
   #[napi]
   pub fn index(&self) -> JsIndex {
-    JsIndex::from(self._inner.index())
+    self._inner.index().into()
+  }
+
+  pub fn schema(&self) -> JsSchema {
+    self._inner.schema().clone().into()
   }
 }

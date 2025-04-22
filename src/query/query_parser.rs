@@ -46,7 +46,7 @@ impl JsQueryParser {
     self
       ._inner
       .parse_query(&query)
-      .map(|query| JsQuery::from(query))
+      .map(|query| query.into())
       .map_err(napi_err)
   }
 }

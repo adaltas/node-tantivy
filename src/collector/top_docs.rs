@@ -32,7 +32,7 @@ impl From<(f32, DocAddress)> for JsTopDocFruit {
   fn from(tuple: (f32, DocAddress)) -> Self {
     JsTopDocFruit {
       score: tuple.0 as f64,
-      doc_address: JsDocAddress::from(tuple.1),
+      doc_address: tuple.1.into(),
     }
   }
 }
@@ -73,10 +73,7 @@ impl JsTopDocs {
       ._inner
       .search(&query._inner, &self._inner)
       .map_err(napi_err)?;
-    let ret = inner_ret
-      .into_iter()
-      .map(|t| JsTopDocFruit::from(t))
-      .collect();
+    let ret = inner_ret.into_iter().map(|t| t.into()).collect();
     Ok(ret)
   }
 }

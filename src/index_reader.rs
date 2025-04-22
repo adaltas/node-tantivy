@@ -14,11 +14,11 @@ use napi::Result;
 use napi_derive::napi;
 use tantivy::IndexReader;
 
-use crate::searcher::JsSearcher;
+use crate::{napi_err, searcher::JsSearcher};
 
 #[napi(js_name = "IndexReader")]
 pub struct JsIndexReader {
-  _inner: IndexReader,
+  pub(crate) _inner: IndexReader,
 }
 
 impl From<IndexReader> for JsIndexReader {
@@ -31,14 +31,11 @@ impl From<IndexReader> for JsIndexReader {
 impl JsIndexReader {
   #[napi]
   pub fn reload(&self) -> Result<()> {
-    self
-      ._inner
-      .reload()
-      .map_err(|e| napi::Error::from_reason(e.to_string()))
+    self._inner.reload().map_err(napi_err)
   }
 
   #[napi]
   pub fn searcher(&self) -> JsSearcher {
-    JsSearcher::from(self._inner.searcher())
+    self._inner.searcher().into()
   }
 }
