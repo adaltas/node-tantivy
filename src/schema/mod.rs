@@ -23,6 +23,7 @@ mod schema_builder;
 
 pub use date_time_precision::JsDateTimePrecision;
 pub use field::JsField;
+pub use field_entry::JsFieldEntry;
 pub use options::*;
 
 pub use schema::JsSchema;

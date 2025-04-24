@@ -22,6 +22,7 @@ mod oldsearch;
 mod query;
 mod schema;
 mod searcher;
+mod store;
 mod structs;
 
 pub use index_reader::JsIndexReader;

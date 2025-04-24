@@ -10,6 +10,7 @@
 //!
 //! Pierre Sauvage <pierre@adaltas.com>
 
+use napi::bindgen_prelude::External;
 use napi::Result;
 use tantivy::schema::Field;
 
@@ -17,7 +18,7 @@ use inner_wrap::wrap_struct;
 
 use crate::napi_err;
 
-use crate::schema::{JsField, JsSchemaBuilder};
+use crate::schema::{JsField, JsFieldEntry, JsSchemaBuilder};
 
 #[wrap_struct("tantivy::schema::Schema")]
 pub struct JsSchema;
@@ -26,6 +27,12 @@ pub struct JsSchema;
 pub struct JsFieldResult {
   pub field_id: u32,
   pub path: String,
+}
+
+#[napi(object, js_name = "FieldTuple")]
+pub struct JsFieldTuple {
+  pub field: External<JsField>,
+  pub field_entry: External<JsFieldEntry>,
 }
 
 impl From<(Field, &str)> for JsFieldResult {
@@ -49,6 +56,18 @@ impl JsSchema {
   #[napi]
   pub fn get_field_name(&self, field: &JsField) -> String {
     self._inner.get_field_name(field._inner).into()
+  }
+
+  #[napi]
+  pub fn fields(&self) -> Vec<JsFieldTuple> {
+    self
+      ._inner
+      .fields()
+      .map(|(f, fe)| JsFieldTuple {
+        field: External::new(f.into()),
+        field_entry: External::new(fe.clone().into()),
+      })
+      .collect()
   }
 
   #[napi]

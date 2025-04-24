@@ -10,29 +10,44 @@
 //!
 //! Pierre Sauvage <pierre@adaltas.com>
 
-use tantivy::IndexMeta;
+use inner_wrap::wrap_struct;
 
-//use crate::schema::JsSchema;
+use crate::index::{JsIndexSettings, JsSegmentMeta};
+use crate::schema::JsSchema;
 
+#[wrap_struct("tantivy::IndexMeta")]
 #[derive(Clone, Debug)]
-#[napi(js_name = "IndexMeta")]
-pub struct JsIndexMeta {
-  //todl for a mapping
-  pub(crate) _inner: IndexMeta,
-  //pub index_settings: JsIndexSettings,
-  //pub segments: Vec<SegmentMeta>,
-  //pub schema: JsSchema,
-  //pub opstamp: Opstamp,
-  //pub payload: Option<String>,
-}
+pub struct JsIndexMeta;
 
-// Implement conversion from Tantivy's
-impl From<IndexMeta> for JsIndexMeta {
-  fn from(_inner: IndexMeta) -> Self {
-    Self {
-      _inner,
-      //schema: JsSchema::from(_inner.schema),
-      //payload: _inner.payload,
-    }
+#[napi]
+impl JsIndexMeta {
+  #[napi(getter)]
+  pub fn index_settings(&self) -> JsIndexSettings {
+    self._inner.index_settings.clone().into()
+  }
+
+  #[napi(getter)]
+  pub fn segments(&self) -> Vec<JsSegmentMeta> {
+    self
+      ._inner
+      .segments
+      .iter()
+      .map(|s| s.clone().into())
+      .collect()
+  }
+
+  #[napi(getter)]
+  pub fn schema(&self) -> JsSchema {
+    self._inner.schema.clone().into()
+  }
+
+  #[napi(getter)]
+  pub fn opstamp(&self) -> u64 {
+    self._inner.opstamp
+  }
+
+  #[napi(getter)]
+  pub fn payload(&self) -> Option<String> {
+    self._inner.payload.clone()
   }
 }

@@ -19,6 +19,7 @@ use inner_wrap::wrap_struct;
 use super::options::*;
 
 #[wrap_struct("tantivy::schema::FieldEntry")]
+#[derive(Clone)]
 pub struct JsFieldEntry;
 
 #[napi]
