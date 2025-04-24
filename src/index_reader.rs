@@ -10,22 +10,14 @@
 //!
 //! Pierre Sauvage <pierre@adaltas.com>
 
+use inner_wrap::wrap_struct;
 use napi::Result;
 use napi_derive::napi;
-use tantivy::IndexReader;
 
 use crate::{napi_err, searcher::JsSearcher};
 
-#[napi(js_name = "IndexReader")]
-pub struct JsIndexReader {
-  pub(crate) _inner: IndexReader,
-}
-
-impl From<IndexReader> for JsIndexReader {
-  fn from(_inner: IndexReader) -> Self {
-    Self { _inner }
-  }
-}
+#[wrap_struct("tantivy::IndexReader")]
+pub struct JsIndexReader;
 
 #[napi]
 impl JsIndexReader {
