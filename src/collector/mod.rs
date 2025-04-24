@@ -13,7 +13,5 @@
 //mod collector;
 mod top_docs;
 
-//pub use collector::JsCollector;
-
 pub use top_docs::JsTopDocFruit;
-pub use top_docs::JsTopDocs;
+//pub use top_docs::JsTopDocs;

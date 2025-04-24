@@ -23,9 +23,9 @@ impl From<Field> for JsField {
   }
 }
 
-impl Into<Field> for JsField {
-  fn into(self) -> Field {
-    self._inner
+impl From<JsField> for Field {
+  fn from(s: JsField) -> Self {
+    s._inner
   }
 }
 

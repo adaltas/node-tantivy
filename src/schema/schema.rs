@@ -11,35 +11,29 @@
 //! Pierre Sauvage <pierre@adaltas.com>
 
 use napi::Result;
+use tantivy::schema::Field;
+
+use inner_wrap::wrap_struct;
 
 use crate::napi_err;
 
-use tantivy::schema::Schema;
-
 use crate::schema::{JsField, JsSchemaBuilder};
 
-#[napi(js_name = "Schema")]
-#[derive(Clone, Debug)]
-pub struct JsSchema {
-  _inner: Schema,
-}
+#[wrap_struct("tantivy::schema::Schema")]
+pub struct JsSchema;
 
-#[napi(object)]
-pub struct FieldResult {
+#[napi(object, js_name = "FieldResult")]
+pub struct JsFieldResult {
   pub field_id: u32,
   pub path: String,
 }
 
-// Implement conversion from Tantivy's
-impl From<Schema> for JsSchema {
-  fn from(_inner: Schema) -> Self {
-    Self { _inner }
-  }
-}
-
-impl Into<Schema> for JsSchema {
-  fn into(self) -> Schema {
-    self._inner
+impl From<(Field, &str)> for JsFieldResult {
+  fn from(tuple: (Field, &str)) -> Self {
+    Self {
+      field_id: tuple.0.field_id(),
+      path: tuple.1.to_string(),
+    }
   }
 }
 
@@ -72,13 +66,7 @@ impl JsSchema {
   }
 
   #[napi]
-  pub fn find_field(&self, full_path: String) -> Option<FieldResult> {
-    self
-      ._inner
-      .find_field(&full_path)
-      .map(|(field, path)| FieldResult {
-        field_id: field.field_id(),
-        path: path.to_string(),
-      })
+  pub fn find_field(&self, full_path: String) -> Option<JsFieldResult> {
+    self._inner.find_field(&full_path).map(|t| t.into())
   }
 }

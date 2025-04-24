@@ -10,37 +10,18 @@
 //!
 //! Pierre Sauvage <pierre@adaltas.com>
 
+use inner_wrap::wrap_struct;
 use napi_derive::napi;
-use tantivy::schema::{JsonObjectOptions, NumericOptions, SchemaBuilder, TextOptions};
-use tantivy::schema::{FAST, INDEXED, STORED, STRING, TEXT};
-use tantivy::DateOptions;
 
-use crate::schema::JsSchema;
+use napi::bindgen_prelude::*;
+use tantivy::schema::{
+  DateOptions, FacetOptions, IpAddrOptions, JsonObjectOptions, NumericOptions, TextOptions,
+};
 
-#[napi(js_name = "SchemaBuilder")]
-pub struct JsSchemaBuilder {
-  _inner: SchemaBuilder,
-}
+use crate::schema::*;
 
-// Implement conversion from Tantivy's
-impl From<SchemaBuilder> for JsSchemaBuilder {
-  fn from(_inner: SchemaBuilder) -> Self {
-    Self { _inner }
-  }
-}
-
-fn get_num_options(options: Vec<String>) -> NumericOptions {
-  let mut num_options = NumericOptions::default();
-  for option in options {
-    match option.as_str() {
-      "STORED" => num_options = num_options | STORED,
-      "INDEXED" => num_options = num_options | INDEXED,
-      "FAST" => num_options = num_options | FAST, // Enable fast field for numeric range queries
-      _ => {}
-    }
-  }
-  num_options
-}
+#[wrap_struct("tantivy::schema::SchemaBuilder")]
+pub struct JsSchemaBuilder;
 
 #[napi]
 impl JsSchemaBuilder {
@@ -51,92 +32,70 @@ impl JsSchemaBuilder {
     }
   }
 
-  /// Adds a text field with indexing options
-  #[napi]
-  pub fn add_text_field(&mut self, name: String, options: Vec<String>) -> String {
-    let mut text_options = TextOptions::default();
-
-    for option in options {
-      match option.as_str() {
-        "STORED" => text_options = text_options | STORED,
-        "STRING" => text_options = STRING,
-        "TEXT" => text_options = TEXT,
-        _ => {}
-      }
-    }
-
-    self._inner.add_text_field(&name, text_options);
-    name
-  }
   /// Adds a u64 (unsigned integer) field
   #[napi]
-  pub fn add_u64_field(&mut self, name: String, options: Vec<String>) -> String {
-    let num_options = get_num_options(options);
-    self._inner.add_u64_field(&name, num_options);
-    name
+  pub fn add_u64_field(&mut self, name: String, options: External<JsNumericOptions>) -> JsField {
+    let opts: NumericOptions = options.as_ref().clone().into();
+    self._inner.add_u64_field(&name, opts).into()
   }
 
   /// Adds an i64 (signed integer) field
   #[napi]
-  pub fn add_i64_field(&mut self, name: String, options: Vec<String>) -> String {
-    let num_options = get_num_options(options);
-    self._inner.add_i64_field(&name, num_options);
-    name
+  pub fn add_i64_field(&mut self, name: String, options: External<JsNumericOptions>) -> JsField {
+    let opts: NumericOptions = options.as_ref().clone().into();
+    self._inner.add_i64_field(&name, opts).into()
   }
 
   /// Adds an f64 (floating-point) field
   #[napi]
-  pub fn add_f64_field(&mut self, name: String, options: Vec<String>) -> String {
-    let num_options = get_num_options(options);
-    self._inner.add_f64_field(&name, num_options);
-    name
+  pub fn add_f64_field(&mut self, name: String, options: External<JsNumericOptions>) -> JsField {
+    let opts: NumericOptions = options.as_ref().clone().into();
+    self._inner.add_f64_field(&name, opts).into()
   }
 
   /// Adds a boolean field
   #[napi]
-  pub fn add_bool_field(&mut self, name: String, options: Vec<String>) -> String {
-    let mut num_options = NumericOptions::default();
-    for option in options {
-      //does not support INDEXED
-      match option.as_str() {
-        "STORED" => num_options = num_options | STORED,
-        "FAST" => num_options = num_options | FAST,
-        _ => {}
-      }
-    }
-    self._inner.add_bool_field(&name, num_options);
-    name
-  }
-
-  /// Adds a JSON field
-  #[napi]
-  pub fn add_json_field(&mut self, name: String, options: Vec<String>) -> String {
-    let mut json_options = JsonObjectOptions::default();
-    for option in options {
-      //does not support FAST
-      match option.as_str() {
-        "STORED" => json_options = json_options | STORED,
-        _ => {}
-      }
-    }
-    self._inner.add_json_field(&name, json_options);
-    name
+  pub fn add_bool_field(&mut self, name: String, options: External<JsNumericOptions>) -> JsField {
+    let opts: NumericOptions = options.as_ref().clone().into();
+    self._inner.add_bool_field(&name, opts).into()
   }
 
   /// Adds a date field (i64 internally, representing timestamp in microseconds)
   #[napi]
-  pub fn add_date_field(&mut self, name: String, options: Vec<String>) -> String {
-    let mut date_options = DateOptions::default();
-    for option in options {
-      match option.as_str() {
-        "STORED" => date_options = date_options | STORED,
-        "INDEXED" => date_options = date_options | INDEXED,
-        "FAST" => date_options = date_options | FAST,
-        _ => {}
-      }
-    }
-    self._inner.add_date_field(&name, date_options);
-    name
+  pub fn add_date_field(&mut self, name: String, options: External<JsDateOptions>) -> JsField {
+    let opts: DateOptions = options.as_ref().clone().into();
+    self._inner.add_date_field(&name, opts).into()
+  }
+
+  #[napi]
+  pub fn add_ip_addr_field(&mut self, name: String, options: External<JsIpAddrOptions>) -> JsField {
+    let opts: IpAddrOptions = options.as_ref().clone().into();
+    self._inner.add_ip_addr_field(&name, opts).into()
+  }
+
+  /// Adds a text field with indexing options
+  #[napi]
+  pub fn add_text_field(&mut self, name: String, options: External<JsTextOptions>) -> JsField {
+    let opts: TextOptions = options.as_ref().clone().into();
+    self._inner.add_text_field(&name, opts).into()
+  }
+
+  /// Adds a JSON field
+  #[napi]
+  pub fn add_facet_field(&mut self, name: String, options: External<JsFacetOptions>) -> JsField {
+    let opts: FacetOptions = options.as_ref().clone().into();
+    self._inner.add_facet_field(&name, opts).into()
+  }
+
+  /// Adds a JSON field
+  #[napi]
+  pub fn add_json_field(
+    &mut self,
+    name: String,
+    options: External<JsJsonObjectOptions>,
+  ) -> JsField {
+    let opts: JsonObjectOptions = options.as_ref().clone().into();
+    self._inner.add_json_field(&name, opts).into()
   }
 
   /// Builds the final schema

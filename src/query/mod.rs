@@ -14,4 +14,4 @@ mod query;
 mod query_parser;
 
 pub use query::JsQuery;
-pub use query_parser::JsQueryParser;
+//pub use query_parser::JsQueryParser;

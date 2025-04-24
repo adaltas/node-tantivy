@@ -16,6 +16,7 @@ extern crate napi_derive;
 mod collector;
 mod index;
 mod index_reader;
+mod index_reader_builder;
 mod old;
 mod oldsearch;
 mod query;
